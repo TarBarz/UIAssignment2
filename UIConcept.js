@@ -21,7 +21,7 @@ var currentMP = 80;
 var maxMP = 165;
 var atk = 21;
 var def = 18;
-var spd = 12;
+var spd = 19;
 var gold = 350;
 
 var itemArray = [{id: 0, img: "itemicon1", name: "Health Potion", qty: 3, price: 35, desc: "A potent healing potion brewed by a witch.", effectdesc: "HP +400"},
@@ -30,8 +30,6 @@ var itemArray = [{id: 0, img: "itemicon1", name: "Health Potion", qty: 3, price:
 {id: 3, img: "itemicon4", name: "Defence Boost", qty: 1, price: 180, desc: "A magic sigil that boosts defence permanently.", effectdesc: "DEF +2"},
 {id: 4, img: "itemicon5", name: "Gold Coin", qty: 1, price: 500, desc: "A coin with no practical use. Can be sold for a high price.", effectdesc: "N/A"},
 {id: 5, img: "itemicon6", name: "Super Potion", qty: 0, price: 200, desc: "A strong, versatile, and rare potion.", effectdesc: "HP +500, MP +100"}];
-
-
 
 var item0img = new Image();
 item0img.src = "img/" + itemArray[0].img + ".png";
@@ -46,26 +44,99 @@ item4img.src = "img/" + itemArray[4].img + ".png";
 var item5img = new Image();
 item5img.src = "img/" + itemArray[5].img + ".png";
 
+var armourArray = [{id: 0, img: "armouricon0", name: "Silk Dress", desc1: "A fashionable, lightweight silk dress.", desc2:"", atkplus: 0, defplus: 5, spdplus: 18},
+	{id: 1, img: "armouricon1", name: "Magic Robe", desc1: "A defensive robe popular with young", desc2: "women in the kingdom.", atkplus: 0, defplus : 15, spdplus: 2},
+	{id: 2, img: "armouricon2", name: "Chainmail Armour", desc1: "Heavy armour that protects the user but", desc2: "slows them down.", atkplus: 0, defplus: 25, spdplus: -10}];
+
+var armour0img = new Image();
+armour0img.src = "img/" + armourArray[0].img + ".png";
+var armour1img = new Image();
+armour1img.src = "img/" + armourArray[1].img + ".png";
+var armour2img = new Image();
+armour2img.src = "img/" + armourArray[2].img + ".png";
+	
+var weaponArray = [{id: 0, img: "weaponicon0", name: "Bronze Sword", desc1: "A common, basic, lightweight shortsword.", desc2: "", atkplus: 10, defplus: 0, spdplus: 2},
+	{id: 1, img: "weaponicon1", name: "Iron Bow", desc1: "A heavy, long-range bow forged by", desc2: " mountain elves.", atkplus: 12, defplus: 0, spdplus: -3},
+	{id: 2, img: "weaponicon2", name: "Dragonsword", desc1: "An extremely powerful but bulky greatsword", desc2: " forged from dragon scales.", atkplus: 25, defplus: 0, spdplus: -15}];
+
+var weapon0img = new Image();
+weapon0img.src = "img/" + weaponArray[0].img + ".png";
+var weapon1img = new Image();
+weapon1img.src = "img/" + weaponArray[1].img + ".png";
+var weapon2img = new Image();
+weapon2img.src = "img/" + weaponArray[2].img + ".png";
+
+var equippedArmour = 0;
+var equippedWeapon = 0;
+	
+var missionArray = [{id:0, name: "To the Palace!", desc1: "Get to the palace to meet the princess!", desc2: "", crucial: true},
+	{id: 1, name: "The Swamp Monsters", desc1: "Orcs have been terrorising the swamp. Deal", desc2: "with them. Slay five Moss Orcs in the swamp.", crucial: false},
+	{id: 2, name: "The Witch's Ingredients", desc1: "The village witch offered to brew you a potion if", desc2: "you bring her five healing herbs.", crucial: false},
+	{id: 3, name: "The Haunted House", desc1: "The villagers say the old house East of town is", desc2: "haunted. Investigate it and find the truth.", crucial: false}];	
+
 var arrow = new Image();
 arrow.src = "img/selectionarrow.png";
 var arrowLocation;
 var specialArrow = new Image();
 specialArrow.src = "img/specialarrow.png";
+var sideArrow = new Image();
+sideArrow.src = "img/selectionarrowside.png";
+
+var importantOrb = new Image();
+importantOrb.src = "img/crucialorb.png";
+var optionalOrb = new Image();
+optionalOrb.src = "img/noncrucialorb.png";
+var playerArrow = new Image();
+playerArrow.src = "img/playerarrow.png";
+
+var map = new Image();
+map.src = "img/map.png";
+
 
 var specialArrowLocation;
+var gearSelect = 0;
 
 var currentScreen; //assign id numbers to each screen
 
 window.addEventListener("keydown", keyDown);
 
-StartInventoryScreen();
+StartPauseScreen();
 
 function StartInventoryScreen()
 {
 	arrowLocation = 0;
 	specialArrowLocation = 0;
-	DrawInventoryScreen();
 	currentScreen = 1;
+	DrawInventoryScreen();
+}
+
+function StartGearScreen()
+{
+	arrowLocation = 3;
+	specialArrowLocation = 0;
+	currentScreen = 2;
+	gearSelect = 0;
+	DrawGearScreen();
+}
+
+function StartMissionScreen()
+{
+	arrowLocation = 0;
+	currentScreen = 3;
+	DrawMissionScreen();
+}
+
+function StartMapScreen()
+{
+	currentScreen = 4;
+	DrawMapScreen();
+}
+
+function StartPauseScreen()
+{
+	currentScreen = 0;
+	arrowLocation = 0;
+	DrawPauseScreen();
 }
 
 function DrawInventoryScreen()
@@ -74,13 +145,13 @@ function DrawInventoryScreen()
 	surface.font = "50px Arial Black";
 	surface.textAlign = "center";
 	surface.fillStyle = "white";
-	surface.fillRect(220, 130, 840, 250);
+	surface.fillRect(220, 130, 840, 250); //inventory background rectangle
 	surface.beginPath();
 	surface.lineWidth = 3;
 	surface.rect(220, 130, 840, 250);
 	surface.stroke();
 	
-	surface.fillRect(320, 10, 640, 100);
+	surface.fillRect(320, 10, 640, 100); //title
 	surface.rect(320, 10, 640, 100);
 	surface.stroke();
 	
@@ -128,6 +199,7 @@ function DrawInventoryScreen()
 	surface.fillText("GEAR", 1110, 75);
 	surface.fillText("USE", 1110, 525);
 	surface.fillText("DISCARD", 1110, 605);
+
 	
 	if (arrowLocation <=5 && itemArray[arrowLocation].qty != 0)
 	{
@@ -135,6 +207,12 @@ function DrawInventoryScreen()
 		switch (arrowLocation)
 		{
 			case 0:
+				item0img.onload = function()
+				{
+					surface.drawImage(item0img, 180, 400, 100, 100);
+					if (itemArray[0].qty != 0)
+						surface.drawImage(item0img, pointsArrayX[0]+8, pointsArrayY[0]+8);
+				};
 				surface.drawImage(item0img, 180, 400, 100, 100);
 				break;
 			case 1:
@@ -171,12 +249,12 @@ function DrawInventoryScreen()
 	surface.rect(pointsArrayX[i],pointsArrayY[i],80,80);
 	surface.stroke();		
 	}
-
-	item0img.onload = function()
+	
+	/*item0img.onload = function()
 	{
 		if (itemArray[0].qty != 0)
 			surface.drawImage(item0img, pointsArrayX[0]+8, pointsArrayY[0]+8);
-	};
+	};*/
 	item1img.onload = function()
 	{
 		if (itemArray[1].qty != 0)
@@ -235,20 +313,520 @@ function DrawInventoryScreen()
 	}
 }
 
+function DrawGearScreen()
+{
+	surface.clearRect(0,0,1280,640);
+	surface.font = "50px Arial Black";
+	surface.textAlign = "center";
+	surface.fillStyle = "white";
+	surface.beginPath();
+	surface.lineWidth = 3;
+	surface.fillRect(320, 10, 640, 100); //title
+	surface.rect(320, 10, 640, 100);
+	surface.stroke();
+	
+	surface.fillRect(40, 10, 260, 100); //menu cycle buttons
+	surface.rect(40, 10, 260, 100);
+	surface.stroke();
+	surface.fillRect(980,10,260,100);
+	surface.rect(980, 10, 260, 100);
+	surface.stroke();
+	
+	surface.fillRect(180, 400, 100, 100);
+	surface.rect(180, 400, 100, 100); //icon
+	surface.stroke();
+	
+	surface.fillRect(300, 400, 560, 160);
+	surface.rect(300, 400, 560, 160); //description
+	surface.stroke();
+	
+	surface.fillRect(880, 400, 300, 160); //stats
+	surface.rect(880, 400, 300, 160);
+	surface.stroke();
+	
+	surface.fillRect(40, 140, 260, 100);
+	surface.rect(40, 140, 260, 100); //weapons vs armour buttons
+	surface.fillRect(40, 260, 260, 100);
+	surface.rect(40, 260, 260, 100);
+	surface.stroke();
+	
+	var pointsArrayX = [360, 360, 360];
+	var pointsArrayY = [120, 210, 300];
+	
+	for (var i = 0; i <= 2; i++)
+	{
+		surface.fillStyle = "white";
+		surface.fillRect(pointsArrayX[i], pointsArrayY[i]+10, 480, 60);
+		surface.rect(pointsArrayX[i], pointsArrayY[i]+10, 480, 60);
+		surface.stroke();
+		surface.fillStyle = "#ffc7ff";
+		surface.fillRect(pointsArrayX[i], pointsArrayY[i], 80, 80);
+		surface.beginPath();
+		surface.lineWidth = 3;
+		surface.rect(pointsArrayX[i],pointsArrayY[i],80,80);
+		surface.stroke();
+		surface.fillStyle = "black";
+		
+		surface.textAlign = "right";
+		surface.font = "35px Arial Black";
+		if (gearSelect == 0)
+		{
+			surface.fillText(armourArray[i].name, pointsArrayX[i] + 470, pointsArrayY[i] + 50);
+		}
+		else if (gearSelect == 1)
+		{
+			surface.fillText(weaponArray[i].name, pointsArrayX[i] + 470, pointsArrayY[i] + 50);
+		}
+	}
+	
+	surface.textAlign = "center";	
+	surface.font = "50px Arial Black";
+	surface.fillStyle = "black";
+	surface.fillRect(10, 20, 80, 80);
+	surface.fillRect(1190, 20, 80, 80);
+	surface.fillStyle = "white";
+	surface.fillText("Q", 50, 75);
+	surface.fillText("P", 1230, 75);
+	
+	surface.lineWidth = 3;
+	surface.fillStyle = "black";
+	surface.font = "50px Arial Black";
+	surface.fillText("GEAR", 640, 75);
+	surface.font = "40px Arial Black";
+	surface.fillText("INV.", 170, 75);
+	surface.fillText("QUESTS", 1090, 75); //1110, 75
+	surface.fillText("ARMOUR", 170, 200);
+	surface.fillText("WEAPON", 170, 320);
+	
+	if (gearSelect == 0)
+	{
+		armour0img.onload = function()
+		{
+			surface.drawImage(armour0img, pointsArrayX[0]+8, pointsArrayY[0]+8);
+		}
+		armour1img.onload = function()
+		{
+			surface.drawImage(armour1img, pointsArrayX[1]+8, pointsArrayY[1]+8);
+		}
+		armour2img.onload = function()
+		{
+			surface.drawImage(armour2img, pointsArrayX[2]+8, pointsArrayY[2]+8);
+		}
+		
+		surface.drawImage(armour0img, pointsArrayX[0]+8, pointsArrayY[0]+8);
+		surface.drawImage(armour1img, pointsArrayX[1]+8, pointsArrayY[1]+8);
+		surface.drawImage(armour2img, pointsArrayX[2]+8, pointsArrayY[2]+8);
+		
+		sideArrow.onload = function()
+		{
+			surface.drawImage(sideArrow, 10, 160, 50, 50);
+		}
+		surface.drawImage(sideArrow, 10, 160, 50, 50);
+		
+		surface.fillStyle = "green";
+		surface.fillRect(pointsArrayX[equippedArmour]+490, pointsArrayY[equippedArmour]+20, 40, 40);
+		surface.rect(pointsArrayX[equippedArmour]+490, pointsArrayY[equippedArmour]+20, 40, 40);
+		surface.textAlign = "center";
+		surface.fillStyle = "black";
+		surface.font = "40px Arial Black";
+		surface.fillText("E", pointsArrayX[equippedArmour]+510, pointsArrayY[equippedArmour]+55);
+		surface.stroke();
+	}
+	else if (gearSelect == 1)
+	{
+		weapon0img.onload = function()
+		{
+			surface.drawImage(weapon0img, pointsArrayX[0]+8, pointsArrayY[0]+8);
+		}
+		weapon1img.onload = function()
+		{
+			surface.drawImage(weapon1img, pointsArrayX[1]+8, pointsArrayY[1]+8);
+		}
+		weapon2img.onload = function()
+		{
+			surface.drawImage(weapon2img, pointsArrayX[2]+8, pointsArrayY[2]+8);
+		}
+		
+		surface.drawImage(weapon0img, pointsArrayX[0]+8, pointsArrayY[0]+8);
+		surface.drawImage(weapon1img, pointsArrayX[1]+8, pointsArrayY[1]+8);
+		surface.drawImage(weapon2img, pointsArrayX[2]+8, pointsArrayY[2]+8);
+		
+		surface.drawImage(sideArrow, 10, 280, 50, 50);
+		
+		surface.fillStyle = "green";
+		surface.fillRect(pointsArrayX[equippedWeapon]+490, pointsArrayY[equippedWeapon]+20, 40, 40);
+		surface.rect(pointsArrayX[equippedWeapon]+490, pointsArrayY[equippedWeapon]+20, 40, 40);
+		surface.textAlign = "center";
+		surface.fillStyle = "black";
+		surface.font = "40px Arial Black";
+		surface.fillText("E", pointsArrayX[equippedWeapon]+510, pointsArrayY[equippedWeapon]+55);
+		surface.stroke();
+	}
+	
+	surface.textAlign = "center";
+	
+	if (arrowLocation != 3)
+	{
+		surface.fillStyle = "white";
+		surface.fillRect(900, 140, 300, 100);
+		surface.rect(900, 140, 300, 100);
+		surface.stroke();
+		surface.font = "50px Arial Black";
+		surface.fillStyle = "black";
+		surface.fillText("EQUIP", 1050, 205);
+		
+		surface.drawImage(sideArrow, pointsArrayX[arrowLocation]-30, pointsArrayY[arrowLocation]+15, 50, 50);
+		//880 400 300 160
+		surface.font = "30px Arial Black";
+		surface.textAlign = "left";
+		surface.fillText("ATK", 900, 440);
+		surface.fillText("DEF", 900, 490);
+		surface.fillText("SPD", 900, 540);
+		
+		surface.textAlign = "center";
+		surface.fillText(atk, 1030, 440);
+		surface.fillText(def, 1030, 490);
+		surface.fillText(spd, 1030, 540);
+		if(gearSelect == 0)
+		{
+			if (arrowLocation == 0)
+				surface.drawImage(armour0img, 180, 400, 100, 100);
+			else if (arrowLocation == 1)
+				surface.drawImage(armour1img, 180, 400, 100, 100);
+			else if (arrowLocation == 2)
+				surface.drawImage(armour2img, 180, 400, 100, 100);
+			
+			surface.fillText(armourArray[arrowLocation].name, 580, 450);
+			
+			surface.font = "20px Arial Black";
+			surface.fillText(armourArray[arrowLocation].desc1, 580, 500);
+			surface.fillText(armourArray[arrowLocation].desc2, 580, 520);
+			
+			surface.font = "30px Arial Black";
+			surface.textAlign = "right";
+			surface.fillStyle = "green";
+			surface.fillText("+"+armourArray[arrowLocation].atkplus, 1160, 440);
+			surface.fillText("+"+armourArray[arrowLocation].defplus, 1160, 490);
+			if (armourArray[arrowLocation].spdplus >= 0)
+				surface.fillText("+"+armourArray[arrowLocation].spdplus, 1160, 540);
+			else
+			{
+				surface.fillStyle = "red";
+				surface.fillText(armourArray[arrowLocation].spdplus, 1160, 540);
+			}
+		}
+		else if (gearSelect == 1)
+		{
+			if (arrowLocation == 0)
+				surface.drawImage(weapon0img, 180, 400, 100, 100);
+			else if (arrowLocation == 1)
+				surface.drawImage(weapon1img, 180, 400, 100, 100);
+			else if (arrowLocation == 2)
+				surface.drawImage(weapon2img, 180, 400, 100, 100);
+			
+			surface.fillText(weaponArray[arrowLocation].name, 580, 450);
+			
+			surface.font = "20px Arial Black";
+			surface.fillText(weaponArray[arrowLocation].desc1, 580, 500);
+			surface.fillText(weaponArray[arrowLocation].desc2, 580, 520);
+			
+			surface.font = "30px Arial Black";
+			surface.textAlign = "right";
+			surface.fillStyle = "green";
+			surface.fillText("+"+weaponArray[arrowLocation].atkplus, 1160, 440);
+			surface.fillText("+"+weaponArray[arrowLocation].defplus, 1160, 490);
+			if (weaponArray[arrowLocation].spdplus >= 0)
+				surface.fillText("+"+weaponArray[arrowLocation].spdplus, 1160, 540);
+			else
+			{
+				surface.fillStyle = "red";
+				surface.fillText(weaponArray[arrowLocation].spdplus, 1160, 540);
+			}
+		}
+		
+		if (specialArrowLocation == 1)
+		{
+			surface.drawImage(sideArrow, 870, 160, 50, 50);
+		}
+	}
+}
+
+function DrawMissionScreen()
+{
+	surface.clearRect(0,0,1280,640);
+	surface.font = "50px Arial Black";
+	surface.textAlign = "center";
+	surface.fillStyle = "white";
+	surface.beginPath();
+	surface.lineWidth = 3;
+	surface.fillRect(320, 10, 640, 100); //title
+	surface.rect(320, 10, 640, 100);
+	surface.stroke();
+	
+	surface.fillRect(40, 10, 260, 100); //menu cycle buttons
+	surface.rect(40, 10, 260, 100);
+	surface.stroke();
+	surface.fillRect(980,10,260,100);
+	surface.rect(980, 10, 260, 100);
+	surface.stroke();
+	
+	surface.fillRect(600, 180, 540, 80); //selected mission title
+	surface.rect(600, 180, 540, 80);
+	
+	surface.fillRect(600, 280, 540, 280);
+	surface.rect(600, 280, 540, 280); //mission desc display
+	surface.stroke();
+	
+	var pointsArrayX = [60, 60, 60, 60];
+	var pointsArrayY = [180, 280, 380, 480];
+	
+	
+	for (var i = 0; i < 4; i++)
+	{
+		surface.fillStyle = "white";
+		surface.fillRect(pointsArrayX[i], pointsArrayY[i], 400, 80);
+		surface.rect(pointsArrayX[i], pointsArrayY[i], 400, 80);
+		surface.stroke();
+		
+		surface.fillStyle = "black";
+		surface.font = "30px Arial Black";
+		surface.fillText(missionArray[i].name, pointsArrayX[i]+200, pointsArrayY[i]+50);
+		
+
+
+		
+		if (missionArray[i].crucial == true)
+		{
+			surface.drawImage(importantOrb, 460, pointsArrayY[i]+10, 60, 60);
+			importantOrb.onload = function()
+			{
+				surface.drawImage(importantOrb, 460, 190, 60, 60);
+			}
+		}
+		else
+		{
+			surface.drawImage(optionalOrb, 460, pointsArrayY[i]+10, 60, 60);
+			optionalOrb.onload = function()
+			{
+				surface.drawImage(optionalOrb, 460, 290, 60, 60);
+				surface.drawImage(optionalOrb, 460, 390, 60, 60);
+				surface.drawImage(optionalOrb, 460, 490, 60, 60);
+			}
+		}	
+	}
+	
+	surface.textAlign = "center";	
+	surface.font = "50px Arial Black";
+	surface.fillStyle = "black";
+	surface.fillRect(10, 20, 80, 80);
+	surface.fillRect(1190, 20, 80, 80);
+	surface.fillStyle = "white";
+	surface.fillText("Q", 50, 75);
+	surface.fillText("P", 1230, 75);
+
+	surface.lineWidth = 3;
+	surface.fillStyle = "black";
+	surface.font = "50px Arial Black";
+	surface.fillText("QUESTS", 640, 75);
+	surface.font = "40px Arial Black";
+	surface.fillText("GEAR", 170, 75);
+	surface.fillText("MAP", 1110, 75); //1110, 75
+	
+	surface.font = "30px Arial Black";
+	surface.fillText(missionArray[arrowLocation].name, 870, 230);
+	
+	surface.font = "20px Arial Black";
+	surface.fillText(missionArray[arrowLocation].desc1, 870, 400);
+	surface.fillText(missionArray[arrowLocation].desc2, 870, 420);
+	
+	sideArrow.onload = function()
+	{
+		surface.drawImage(sideArrow, pointsArrayX[arrowLocation]-60, pointsArrayY[arrowLocation]+10, 60, 60);
+	}
+	surface.drawImage(sideArrow, pointsArrayX[arrowLocation]-60, pointsArrayY[arrowLocation]+10, 60, 60);
+}
+
+function DrawMapScreen()
+{
+	surface.clearRect(0,0,1280,640);
+	surface.font = "50px Arial Black";
+	surface.textAlign = "center";
+	surface.fillStyle = "white";
+	surface.beginPath();
+	surface.lineWidth = 3;
+	surface.fillRect(320, 10, 640, 100); //title
+	surface.rect(320, 10, 640, 100);
+	surface.stroke();
+	
+	surface.fillRect(40, 10, 260, 100); //menu cycle buttons
+	surface.rect(40, 10, 260, 100);
+	surface.stroke();
+	surface.fillRect(980,10,260,100);
+	surface.rect(980, 10, 260, 100);
+	surface.stroke();
+	
+	map.onload = function()
+	{
+		surface.drawImage(map, 290, 160);	
+		surface.drawImage(importantOrb, 630, 360);
+		surface.drawImage(optionalOrb, 330, 420);
+		surface.drawImage(optionalOrb, 760, 410);
+		surface.drawImage(optionalOrb, 640, 400);
+		surface.drawImage(playerArrow, 610, 370, 15, 20);
+	}
+	surface.drawImage(map, 290, 160);
+	surface.rect(288, 158, 704, 404);
+	surface.stroke();
+	
+	importantOrb.onload = function()
+	{
+		surface.drawImage(importantOrb, 630, 360);
+	}
+	surface.drawImage(importantOrb, 630, 360);
+	
+	optionalOrb.onload = function()
+	{
+		surface.drawImage(optionalOrb, 330, 420);
+		surface.drawImage(optionalOrb, 760, 410);
+		surface.drawImage(optionalOrb, 640, 400);
+	}
+	surface.drawImage(optionalOrb, 330, 420);
+	surface.drawImage(optionalOrb, 760, 410);
+	surface.drawImage(optionalOrb, 640, 400);
+	
+	playerArrow.onload = function()
+	{
+		surface.drawImage(playerArrow, 610, 370, 15, 20);
+	}
+	surface.drawImage(playerArrow, 610, 370, 15, 20);
+
+	surface.textAlign = "center";	
+	surface.font = "50px Arial Black";
+	surface.fillStyle = "black";
+	surface.fillRect(10, 20, 80, 80);
+	surface.fillRect(1190, 20, 80, 80);
+	surface.fillStyle = "white";
+	surface.fillText("Q", 50, 75);
+	surface.fillText("P", 1230, 75);
+
+	surface.lineWidth = 3;
+	surface.fillStyle = "black";
+	surface.font = "50px Arial Black";
+	surface.fillText("MAP", 640, 75);
+	surface.font = "40px Arial Black";
+	surface.fillText("QUESTS", 185, 75);
+	surface.fillText("PAUSE", 1110, 75);
+}
+
+function DrawPauseScreen()
+{
+	surface.clearRect(0,0,1280,640);
+	surface.font = "50px Arial Black";
+	surface.textAlign = "center";
+	surface.fillStyle = "white";
+	surface.beginPath();
+	surface.lineWidth = 3;
+	surface.fillRect(320, 10, 640, 100); //title
+	surface.rect(320, 10, 640, 100);
+	surface.stroke();
+	
+	surface.fillRect(40, 10, 260, 100); //menu cycle buttons
+	surface.rect(40, 10, 260, 100);
+	surface.stroke();
+	surface.fillRect(980,10,260,100);
+	surface.rect(980, 10, 260, 100);
+	surface.stroke();
+	
+	surface.fillRect (80, 200, 400, 120); //options
+	surface.fillRect(80, 340, 400, 120);
+	surface.fillRect(80, 480, 400, 120);
+	surface.rect (80, 200, 400, 120);
+	surface.rect (80, 340, 400, 120);
+	surface.rect (80, 480, 400, 120);
+	surface.stroke();
+	
+	surface.fillRect(560,200,640,100);
+	surface.rect(560, 200, 640, 100); //status
+	surface.fillRect(520, 320, 720, 300);
+	surface.rect(520, 320, 720, 300);
+	surface.stroke();
+	
+	surface.textAlign = "center";	
+	surface.font = "50px Arial Black";
+	surface.fillStyle = "black";
+	surface.fillRect(10, 20, 80, 80);
+	surface.fillRect(1190, 20, 80, 80);
+	surface.fillStyle = "white";
+	surface.fillText("Q", 50, 75);
+	surface.fillText("P", 1230, 75);
+
+	surface.lineWidth = 3;
+	surface.fillStyle = "black";
+	surface.font = "50px Arial Black";
+	surface.fillText("PAUSE", 640, 75);
+	surface.font = "40px Arial Black";
+	surface.fillText("MAP", 175, 75);
+	surface.fillText("INV.", 1110, 75);
+	
+	surface.font = "40px Arial Black";
+	surface.fillText("RESUME", 280, 270);
+	surface.fillText("SETTINGS", 280, 410);
+	surface.fillText("QUIT", 280, 550);
+	
+	surface.fillText("STATUS", 880, 260);
+	
+	surface.font = "30px Arial Black";
+	surface.textAlign = "left";
+	surface.fillText("LV", 540, 360);
+	surface.fillText("HP", 540, 400);
+	surface.fillText("MP", 540, 440);
+	surface.fillText("ATK", 540, 480);
+	surface.fillText("DEF", 540, 520);
+	surface.fillText("SPD", 540, 560);
+	surface.fillText("GOLD", 540, 600);
+	
+	surface.textAlign = "right";
+	surface.fillText(lv, 1220, 360);
+	surface.fillText(currentHP + "/" + maxHP, 1220, 400);
+	surface.fillText(currentMP + "/" + maxMP, 1220, 440);
+	surface.fillText(atk + " -> " + (atk + weaponArray[equippedWeapon].atkplus), 1220, 480);
+	surface.fillText(def + " -> " + (def + armourArray[equippedArmour].defplus), 1220, 520);
+	surface.fillText(spd + " -> " + (spd + weaponArray[equippedWeapon].spdplus + armourArray[equippedArmour].spdplus), 1220, 560);
+	surface.fillText(gold, 1220, 600);
+	
+	var pointsArrayX = [80, 80, 80];
+	var pointsArrayY = [200, 340, 480];
+	
+	sideArrow.onload = function()
+	{
+		surface.drawImage(sideArrow, pointsArrayX[arrowLocation]-50, pointsArrayY[arrowLocation]+20, 80, 80);
+	}
+	surface.drawImage(sideArrow, pointsArrayX[arrowLocation]-50, pointsArrayY[arrowLocation]+20, 80, 80);
+}
+
 function keyDown()
 {
 	switch (event.keyCode)
 	{
 
 		case 87: //W
-			if (currentScreen == 1)
+			if (currentScreen == 0)
+			{
+				if (arrowLocation > 0)
+					arrowLocation--;
+				else
+					arrowLocation = 2;
+				fip.play();
+				DrawPauseScreen();
+			}
+			else if (currentScreen == 1)
 			{
 				if (specialArrowLocation == 0)
 				{
 					if (arrowLocation >= 5)
 					{
 						arrowLocation -= 5;
-						//ding.play();
+						fip.play();
 						DrawInventoryScreen();
 					}
 					else
@@ -267,9 +845,56 @@ function keyDown()
 					DrawInventoryScreen();
 				}
 			}
+			else if (currentScreen == 2)
+			{
+				if (arrowLocation == 3)
+				{
+					if (gearSelect == 0)
+						gearSelect = 1;
+					else if (gearSelect == 1)
+						gearSelect = 0;
+					fip.play();
+					DrawGearScreen();
+				}
+				else if (arrowLocation != 3 && specialArrowLocation == 0)
+				{
+					if (arrowLocation > 0)
+						arrowLocation--;
+					else
+						arrowLocation = 2;
+					fip.play();
+					DrawGearScreen();
+				}
+				else if (specialArrowLocation == 1)
+					bimp.play();
+			}
+			else if (currentScreen == 3)
+			{
+				if (arrowLocation > 0)
+				{
+					arrowLocation--;
+					fip.play();
+					DrawMissionScreen();
+				}
+				else
+				{
+					arrowLocation = 3;
+					fip.play();
+					DrawMissionScreen();
+				}
+			}
 			break;
 		case 83: //S
-			if (currentScreen == 1)
+			if (currentScreen == 0)
+			{
+				if (arrowLocation < 2)
+					arrowLocation++;
+				else
+					arrowLocation = 0;
+				fip.play();
+				DrawPauseScreen();
+			}
+			else if (currentScreen == 1)
 			{
 				if (specialArrowLocation == 0)
 				{
@@ -293,6 +918,44 @@ function keyDown()
 					specialArrowLocation = 1;
 					fip.play();
 					DrawInventoryScreen();
+				}
+			}
+			else if (currentScreen == 2)
+			{
+				if (arrowLocation == 3)
+				{
+					if (gearSelect == 0)
+						gearSelect = 1;
+					else if (gearSelect == 1)
+						gearSelect = 0;
+					fip.play();
+					DrawGearScreen();
+				}
+				else if (arrowLocation != 3 && specialArrowLocation == 0)
+				{
+					if (arrowLocation < 2)
+						arrowLocation++;
+					else
+						arrowLocation = 0;
+					fip.play();
+					DrawGearScreen();
+				}
+				else if (specialArrowLocation == 1)
+					bimp.play();
+			}
+			else if (currentScreen == 3)
+			{
+				if (arrowLocation < 3)
+				{
+					arrowLocation++;
+					fip.play();
+					DrawMissionScreen();
+				}
+				else
+				{
+					arrowLocation = 0;
+					fip.play();
+					DrawMissionScreen();
 				}
 			}
 			break;
@@ -329,7 +992,24 @@ function keyDown()
 			}
 			break;
 		case 32: //Space
-			if (currentScreen == 1)
+			if (currentScreen == 0)
+			{
+				if (arrowLocation == 0)
+				{
+					ding.play();
+					resumeGame();
+				}
+				else if (arrowLocation == 1)
+				{
+					ding.play();
+				}
+				else if (arrowLocation == 2)
+				{
+					ding.play();
+					quitGame();
+				}
+			}
+			else if (currentScreen == 1)
 			{
 				if (specialArrowLocation == 0)
 				{
@@ -361,16 +1041,112 @@ function keyDown()
 					DrawInventoryScreen();
 				}
 			}
+			else if (currentScreen == 2)
+			{
+				if (arrowLocation == 3)
+				{
+					arrowLocation = 0;
+					ding.play();
+					DrawGearScreen();
+				}
+				else if (arrowLocation != 3 && specialArrowLocation == 0)
+				{
+					specialArrowLocation = 1;
+					ding.play();
+					DrawGearScreen();
+				}
+				else if (specialArrowLocation == 1)
+				{
+					if (gearSelect == 0)
+						equippedArmour = arrowLocation;
+					else if (gearSelect == 1)
+						equippedWeapon = arrowLocation;
+					ding.play();
+					specialArrowLocation = 0;
+					arrowLocation = 3;
+					DrawGearScreen();
+				}
+			}
 			break;
 		case 8: //Backspace
 			if (currentScreen == 1)
+			{
 				if (specialArrowLocation != 0)
 				{
 					specialArrowLocation = 0;
 					shoo.play();
 					DrawInventoryScreen();
 				}
-				break;
+			}
+			else if (currentScreen == 2)
+			{
+				if (arrowLocation != 3 && specialArrowLocation == 0)
+				{
+					arrowLocation = 3;
+					shoo.play();
+					DrawGearScreen();
+				}
+				else if (specialArrowLocation == 1)
+				{
+					specialArrowLocation = 0;
+					shoo.play();
+					DrawGearScreen();
+				}
+			}
+			break;
+			case 81: //Q
+			if (currentScreen == 0)
+			{
+				ding.play();
+				StartMapScreen();
+			}
+			else if (currentScreen == 1)
+			{
+				ding.play();
+				StartPauseScreen();
+			}
+			else if (currentScreen == 2)
+			{
+				ding.play();
+				StartInventoryScreen();
+			}
+			else if (currentScreen == 3)
+			{
+				ding.play();
+				StartGearScreen();
+			}
+			else if (currentScreen == 4)
+			{
+				ding.play();
+				StartMissionScreen();
+			}
+			break;
+			case 80: //P
+			if (currentScreen == 0)
+			{
+				ding.play();
+				StartInventoryScreen();
+			}
+			else if (currentScreen == 1)
+			{
+				ding.play();
+				StartGearScreen();
+			}
+			else if (currentScreen == 2)
+			{
+				ding.play();
+				StartMissionScreen();
+			}
+			else if (currentScreen == 3)
+			{
+				ding.play();
+				StartMapScreen();
+			}
+			else if (currentScreen == 4)
+			{
+				ding.play();
+				StartPauseScreen();
+			}
 	} 
 }
 
@@ -429,4 +1205,14 @@ function UseItem()
 function DiscardItem()
 {
 	itemArray[arrowLocation].qty -= 1;
+}
+
+function resumeGame()
+{
+	window.close();
+}
+
+function quitGame()
+{
+	window.close();
 }
