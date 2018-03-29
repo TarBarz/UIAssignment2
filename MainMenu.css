@@ -1,0 +1,77 @@
+body
+{
+	background-color:Black;
+}
+#Main
+{
+	width: 1280px;
+	height: 640px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color:#b0f2cb;
+}
+#Start
+{
+border: 2px solid #B0C4DE;
+	background-color: white;
+	color: black;
+	text-align: center;
+	padding: 14px 28px;
+	font-size: 16px;
+	margin: 5px;
+	cursor: pointer;
+	transition-duration: 0.5s;
+	width: 150px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+#Start:hover
+{
+	background: SteelBlue;
+}
+#Char
+{
+border: 2px solid #B0C4DE;
+	background-color: white;
+	color: black;
+	text-align: center;
+	padding: 14px 28px;
+	font-size: 16px;
+	margin: 5px;
+	cursor: pointer;
+	transition-duration: 0.5s;
+	width: 150px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+#Char:hover
+{
+	background: SteelBlue;
+}
+#Exit
+{
+border: 2px solid #B0C4DE;
+	background-color: white;
+	color: black;
+	text-align: center;
+	padding: 14px 28px;
+	font-size: 16px;
+	margin: 5px;
+	cursor: pointer;
+	transition-duration: 0.5s;
+	width: 150px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+#Exit:hover
+{
+	background: SteelBlue;
+}
+#Game
+{
+	text-align:center;
+	color:Black
+}
