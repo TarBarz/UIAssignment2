@@ -21,14 +21,14 @@ var currentMP = 80;
 var maxMP = 165;
 var atk = 21;
 var def = 18;
-var spd = 19;
-var gold = 350;
+var spd = 26;
+var gold = 1200;
 
 var itemArray = [{id: 0, img: "itemicon1", name: "Health Potion", qty: 3, price: 35, desc: "A potent healing potion brewed by a witch.", effectdesc: "HP +400"},
 {id: 1, img: "itemicon2", name: "Magic Potion", qty: 2, price: 30, desc: "A powerful brew that restores magic power.", effectdesc: "MP +50"},
 {id: 2, img: "itemicon3", name: "Attack Boost", qty: 1, price: 180, desc: "A magic sigil that boosts strength permanently.", effectdesc: "ATK +2"},
 {id: 3, img: "itemicon4", name: "Defence Boost", qty: 1, price: 180, desc: "A magic sigil that boosts defence permanently.", effectdesc: "DEF +2"},
-{id: 4, img: "itemicon5", name: "Gold Coin", qty: 1, price: 500, desc: "A coin with no practical use. Can be sold for a high price.", effectdesc: "N/A"},
+{id: 4, img: "itemicon5", name: "Gold Coin", qty: 1, price: 500, desc: "A coin with no practical use.", effectdesc: "N/A"},
 {id: 5, img: "itemicon6", name: "Super Potion", qty: 0, price: 200, desc: "A strong, versatile, and rare potion.", effectdesc: "HP +500, MP +100"}];
 
 var item0img = new Image();
@@ -92,6 +92,7 @@ playerArrow.src = "img/playerarrow.png";
 var map = new Image();
 map.src = "img/map.png";
 
+var qtyToBuy;
 
 var specialArrowLocation;
 var gearSelect = 0;
@@ -137,6 +138,15 @@ function StartPauseScreen()
 	currentScreen = 0;
 	arrowLocation = 0;
 	DrawPauseScreen();
+}
+
+function StartShopScreen()
+{
+	currentScreen = 5;
+	arrowLocation = 0;
+	specialArrowLocation = 0;
+	qtyToBuy = 1;
+	DrawShopScreen();
 }
 
 function DrawInventoryScreen()
@@ -804,6 +814,171 @@ function DrawPauseScreen()
 	surface.drawImage(sideArrow, pointsArrayX[arrowLocation]-50, pointsArrayY[arrowLocation]+20, 80, 80);
 }
 
+function DrawShopScreen()
+{
+	surface.clearRect(0,0,1280,640);
+	surface.font = "50px Arial Black";
+	surface.textAlign = "center";
+	surface.fillStyle = "white";
+	surface.beginPath();
+	surface.lineWidth = 3;
+	surface.fillRect(320, 10, 640, 100); //title
+	surface.rect(320, 10, 640, 100);
+	surface.stroke();
+	
+//	surface.fillRect(140,130,120,120); //item icon
+//	surface.rect(140, 130, 120, 120);
+//	surface.stroke();
+	
+	surface.fillRect(220,400,640,100); //item name
+	surface.rect(220, 400, 640, 100);
+	surface.stroke();
+	
+	surface.fillRect(80, 400, 100, 100);
+	surface.rect(80, 400, 100, 100); //icon
+	surface.stroke();
+	
+	surface.fillRect(80, 520, 780, 100);
+	surface.rect(80, 520, 780, 100); //description
+	surface.stroke();
+	
+	surface.fillRect(900, 400, 300, 60);
+	surface.rect(900, 400, 300, 60); //# held
+	surface.stroke();
+	
+	surface.fillRect(900,560,60,60);
+	surface.rect(900, 560, 60, 60); //quantity to buy
+	surface.stroke();
+	
+	surface.fillRect(900,480,140,60);
+	surface.rect(900, 480, 140, 60);//GOLD
+	surface.fillRect(1060,480,140,60);
+	surface.rect(1060, 480, 140, 60);//COST
+	surface.stroke();
+
+	surface.fillRect(1000, 560, 200, 60);
+	surface.rect(1000, 560, 200, 60); //BUY button
+	surface.stroke();
+	
+	var pointsArrayX = [80, 80, 80, 700, 700, 700];
+	var pointsArrayY = [130, 210, 290, 130, 210, 290];
+	
+	for (var i = 0; i < 6; i++)
+	{
+		surface.fillStyle = "white";
+		surface.fillRect(pointsArrayX[i], pointsArrayY[i], 500, 70);
+		surface.rect(pointsArrayX[i], pointsArrayY[i], 500, 70);
+		surface.stroke();
+		
+		surface.beginPath();
+		surface.fillRect(pointsArrayX[i]-40, pointsArrayY[i]+5, 60, 60);
+		surface.rect(pointsArrayX[i]-40, pointsArrayY[i]+5, 60, 60);
+		surface.stroke();
+		
+		surface.fillStyle = "black";
+		surface.font = "30px Arial Black";
+		surface.textAlign = "right";
+		surface.fillText(itemArray[i].name, pointsArrayX[i]+490, pointsArrayY[i]+45);
+		surface.textAlign = "center";
+		surface.font = "25px Arial Black";
+		surface.fillText(itemArray[i].price, pointsArrayX[i]-10, pointsArrayY[i]+42);
+	}
+	
+	surface.fillStyle = "black";
+	surface.font = "50px Arial Black";
+	surface.fillText("SHOP", 640, 75);
+	
+	surface.font = "25px Arial Black";
+	surface.fillText("GOLD", 970, 505);
+	surface.fillText(gold, 970, 530);
+	surface.fillText("COST", 1130, 505);
+	surface.fillText(itemArray[arrowLocation].price * qtyToBuy, 1130, 530);
+	
+	surface.font = "40px Arial Black";
+	surface.fillText(itemArray[arrowLocation].name, 540, 460);
+	surface.font = "30px Arial Black";
+	surface.fillText("HELD: "+itemArray[arrowLocation].qty,1050, 440);
+	surface.font = "20px Arial Black";
+	surface.fillText(itemArray[arrowLocation].desc, 490, 560);
+	surface.fillText(itemArray[arrowLocation].effectdesc, 490, 590);
+	
+	specialArrow.onload = function()
+	{
+		surface.drawImage(specialArrow, pointsArrayX[arrowLocation]+500, pointsArrayY[arrowLocation], 70, 70);
+	};
+	surface.drawImage(specialArrow, pointsArrayX[arrowLocation]+500, pointsArrayY[arrowLocation], 70, 70);
+	
+	if (specialArrowLocation == 1)
+	{
+		surface.drawImage(specialArrow, 1200, 560, 60, 60);
+		surface.fillStyle = "black";
+		surface.font = "35px Arial Black";
+		surface.fillText("BUY?", 1100, 600);
+		surface.fillText(qtyToBuy, 930, 600);
+		//surface.font = "15px Arial Black";
+		surface.fillText("+", 975, 600);
+		surface.fillText("-", 888, 598);
+	}
+	
+	item0img.onload = function()
+	{
+		if (arrowLocation == 0)
+		{
+			surface.drawImage(item0img, 80, 400, 100, 100);
+		}
+	};
+	if (arrowLocation == 0)
+	{
+		surface.drawImage(item0img, 80, 400, 100, 100);
+	}
+	
+	if (arrowLocation == 1)
+	{
+		item1img.onload = function()
+		{
+			surface.drawImage(item1img, 80, 400, 100, 100);
+		};
+		surface.drawImage(item1img, 80, 400, 100, 100);
+	}
+	
+	if (arrowLocation == 2)
+	{
+		item2img.onload = function()
+		{
+			surface.drawImage(item2img, 80, 400, 100, 100);
+		};
+		surface.drawImage(item2img, 80, 400, 100, 100);
+	}
+	
+	if (arrowLocation == 3)
+	{
+		item3img.onload = function()
+		{
+			surface.drawImage(item3img, 80, 400, 100, 100);
+		};
+		surface.drawImage(item3img, 80, 400, 100, 100);
+	}
+	
+	if (arrowLocation == 4)
+	{
+		item4img.onload = function()
+		{
+			surface.drawImage(item4img, 80, 400, 100, 100);
+		};
+		surface.drawImage(item4img, 80, 400, 100, 100);
+	}
+	
+	if (arrowLocation == 5)
+	{
+		item5img.onload = function()
+		{
+			surface.drawImage(item5img, 80, 400, 100, 100);
+		};
+		surface.drawImage(item5img, 80, 400, 100, 100);
+	}
+	
+}
+
 function keyDown()
 {
 	switch (event.keyCode)
@@ -883,6 +1058,17 @@ function keyDown()
 					DrawMissionScreen();
 				}
 			}
+			else if (currentScreen == 5)
+			{
+				if (arrowLocation!=0 && arrowLocation!=3 && specialArrowLocation == 0)
+				{
+					arrowLocation--;
+					fip.play();
+					DrawShopScreen();
+				}
+				else
+					bimp.play();
+			}
 			break;
 		case 83: //S
 			if (currentScreen == 0)
@@ -958,6 +1144,17 @@ function keyDown()
 					DrawMissionScreen();
 				}
 			}
+			else if (currentScreen == 5)
+			{
+				if (arrowLocation != 2 && arrowLocation != 5 && specialArrowLocation == 0)
+				{
+					arrowLocation++;
+					fip.play();
+					DrawShopScreen();
+				}
+				else
+					bimp.play();
+			}
 			break;
 		case 65: //A
 			if (currentScreen == 1)
@@ -974,6 +1171,28 @@ function keyDown()
 						bimp.play();
 				}
 			}
+			else if (currentScreen == 5)
+			{
+				if (specialArrowLocation == 0 && arrowLocation > 2)
+				{
+					arrowLocation -= 3;
+					fip.play();
+					DrawShopScreen();
+				}
+				else if (specialArrowLocation == 0)
+					bimp.play();
+				else if (specialArrowLocation == 1)
+				{
+					if (qtyToBuy > 1)
+					{
+						qtyToBuy--;
+						fip.play();
+						DrawShopScreen();
+					}
+					else
+						bimp.play();
+				}
+			}
 			break;
 		case 68: //D
 			if (currentScreen == 1)
@@ -985,6 +1204,28 @@ function keyDown()
 						arrowLocation += 1;
 						fip.play();
 						DrawInventoryScreen();
+					}
+					else
+						bimp.play();
+				}
+			}
+			else if (currentScreen == 5)
+			{
+				if (specialArrowLocation == 0 && arrowLocation < 3)
+				{
+					arrowLocation += 3;
+					fip.play();
+					DrawShopScreen();
+				}
+				else if (specialArrowLocation == 0)
+					bimp.play();
+				else if (specialArrowLocation == 1)
+				{
+					if (itemArray[arrowLocation].price * (qtyToBuy+1) <= gold)
+					{
+						qtyToBuy+=1;
+						fip.play();
+						DrawShopScreen();
 					}
 					else
 						bimp.play();
@@ -1067,6 +1308,28 @@ function keyDown()
 					DrawGearScreen();
 				}
 			}
+			else if (currentScreen == 5)
+			{
+				if (specialArrowLocation == 0)
+				{
+					if (itemArray[arrowLocation].price <= gold)
+					{
+						specialArrowLocation = 1;
+						ding.play();
+						DrawShopScreen();
+					}
+					else
+						bimp.play();
+				}
+				else if (specialArrowLocation == 1)
+				{
+					BuyItem();
+					ding.play();
+					qtyToBuy = 0;
+					specialArrowLocation = 0;
+					DrawShopScreen();
+				}
+			}
 			break;
 		case 8: //Backspace
 			if (currentScreen == 1)
@@ -1093,6 +1356,14 @@ function keyDown()
 					DrawGearScreen();
 				}
 			}
+			else if (currentScreen == 5)
+				if (specialArrowLocation == 1)
+				{
+					specialArrowLocation = 0;
+					qtyToBuy = 1;
+					shoo.play();
+					DrawShopScreen();
+				}
 			break;
 			case 81: //Q
 			if (currentScreen == 0)
@@ -1147,6 +1418,13 @@ function keyDown()
 				ding.play();
 				StartPauseScreen();
 			}
+			break;
+			case 49: //1
+			StartPauseScreen();
+			break;
+			case 50: //2
+			StartShopScreen();
+			break;
 	} 
 }
 
@@ -1205,6 +1483,12 @@ function UseItem()
 function DiscardItem()
 {
 	itemArray[arrowLocation].qty -= 1;
+}
+
+function BuyItem()
+{
+	itemArray[arrowLocation].qty += qtyToBuy;
+	gold -= (itemArray[arrowLocation].price * qtyToBuy);
 }
 
 function resumeGame()
