@@ -1,0 +1,43 @@
+body, html
+{
+	height: 100%;
+	margin: 0;
+}
+
+@font-face
+{
+	font-family: simplistic;
+	src: url(Simplistic.ttf);
+}
+
+#header
+{
+	font-family: simplistic;
+	text-align: center;
+	text-decoration: underline;
+}
+
+#credits
+{
+	width: 75%;
+	margin: auto;
+	margin-top: 50px;
+	font-size: 25px;
+}
+
+#names
+{
+	font-family: simplistic;
+	list-style-type: none;
+	display: inline-block;
+	margin-left: 245px;
+}
+
+#jobTitles
+{
+	font-family: simplistic;
+	list-style-type: none;
+	display: inline-block;
+	margin-right: 25px;
+	float: right;
+}

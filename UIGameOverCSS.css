@@ -1,0 +1,111 @@
+body
+{
+	background-color: slategrey;
+	width: 1000px;
+	height: 640px;
+}
+
+@font-face
+{
+	font-family: gameOver;
+	src: url(GameOver.otf);
+}
+
+.gameOverContainer
+{
+	background-color: none;
+	color: maroon;
+	font-family: gameOver;
+	height: 645px;
+	margin: auto;
+	width: 1280px;
+}
+
+#gameOverScreen
+{
+	background-color: black;
+	border: 3px solid DarkRed;
+	color: maroon;
+	float: left;
+	font-family: gameOver;
+	font-size: 75px;
+	height: 640px;
+	margin-left: 0.5%;
+	width: 1000px;
+}
+
+#tipScreen
+{
+	background-color: black;
+	border: 3px solid DarkRed;
+	color: maroon;
+	font-family: gameOver;
+	font-size: 75px;
+	height: 640px;
+	margin-left: 80%;
+	width: 550px
+}
+
+.header
+{
+	text-align: center;
+	letter-spacing: 15px;
+}
+
+#continue
+{
+	background-color: FireBrick;
+	border: 2px solid #CD5C5C;
+	color: black;
+	cursor: pointer;
+	display: block;
+	font-family: gameOver;
+	font-size: 25px;
+	height: 70px;
+	margin: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 14px 28px;
+	text-align: center;
+	transition-duration: 0.5s;
+	width: 170px;
+}
+
+#continue:hover
+{
+	background: DarkRed;
+}
+
+#backToTitle
+{
+	background-color: FireBrick;
+	border: 2px solid #CD5C5C;
+	color: black;
+	cursor: pointer;
+	display: block;
+	font-family: gameOver;
+	font-size: 25px;
+	height: 70px;
+	margin: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 14px 28px;
+	text-align: center;
+	transition-duration: 0.5s;
+	width: 170px;
+}
+
+#backToTitle:hover
+{
+	background: Maroon;
+}
+
+p
+{
+	font-size: 22px;
+}
+
+a
+{
+	text-decoration:none;
+}
