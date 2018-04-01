@@ -101,7 +101,7 @@ var currentScreen; //assign id numbers to each screen
 
 window.addEventListener("keydown", keyDown);
 
-StartPauseScreen();
+StartHudScreen();
 
 function StartInventoryScreen()
 {
@@ -147,6 +147,12 @@ function StartShopScreen()
 	specialArrowLocation = 0;
 	qtyToBuy = 1;
 	DrawShopScreen();
+}
+
+function StartHudScreen()
+{
+	currentScreen = 6;
+	DrawHudScreen();
 }
 
 function DrawInventoryScreen()
@@ -979,6 +985,21 @@ function DrawShopScreen()
 	
 }
 
+function DrawHudScreen()
+{
+	surface.clearRect(0,0,1280,640);
+	surface.fillStyle = "black";
+	surface.textAlign = "center";
+	surface.font = "40px Arial Black";
+	surface.fillText("HUD SCREEN STAND-IN", 640, 100);
+	surface.fillText("SHORTCUTS:", 640, 150);
+	surface.fillText("0 - HUD", 640, 200);
+	surface.fillText("1 - PAUSE MENU", 640, 250);
+	surface.fillText("2 - SHOP SCREEN", 640, 300);
+	surface.fillText("3 - GAME OVER", 640, 350);
+	surface.fillText("4 - CREDITS", 640, 400);
+}
+
 function keyDown()
 {
 	switch (event.keyCode)
@@ -1357,6 +1378,7 @@ function keyDown()
 				}
 			}
 			else if (currentScreen == 5)
+			{
 				if (specialArrowLocation == 1)
 				{
 					specialArrowLocation = 0;
@@ -1364,6 +1386,12 @@ function keyDown()
 					shoo.play();
 					DrawShopScreen();
 				}
+			}
+			else if (currentScreen == 0)
+			{
+				shoo.play();
+				StartHudScreen();
+			}
 			break;
 			case 81: //Q
 			if (currentScreen == 0)
@@ -1418,12 +1446,26 @@ function keyDown()
 				ding.play();
 				StartPauseScreen();
 			}
+			else if (currentScreen == 6)
+			{
+				ding.play();
+				StartPauseScreen();
+			}
+			break;
+			case 48: //0
+			StartHudScreen();
 			break;
 			case 49: //1
 			StartPauseScreen();
 			break;
 			case 50: //2
 			StartShopScreen();
+			break;
+			case 51: //3
+			window.location.href = "UIGameOver.html";
+			break;
+			case 52: //4
+			window.location.href = "UICredits.html";
 			break;
 	} 
 }
@@ -1493,10 +1535,10 @@ function BuyItem()
 
 function resumeGame()
 {
-	window.close();
+	StartHudScreen();
 }
 
 function quitGame()
 {
-	window.close();
+	window.location.href = "MainMenu.html";
 }
