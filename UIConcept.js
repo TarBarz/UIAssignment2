@@ -1264,6 +1264,7 @@ function keyDown()
 				else if (arrowLocation == 1)
 				{
 					ding.play();
+					window.location.href = "MainSettings.html";
 				}
 				else if (arrowLocation == 2)
 				{
